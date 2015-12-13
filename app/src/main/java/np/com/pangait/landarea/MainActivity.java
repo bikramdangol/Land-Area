@@ -4,11 +4,18 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
+import com.parse.LogInCallback;
 import com.parse.Parse;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
-public class MainActivity extends ActionBarActivity {
+import org.apache.commons.logging.Log;
+
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,5 +51,38 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        final int id = v.getId();
+        switch (id) {
+            case R.id.signInButton:
+                signInButtonPressed();
+                // your code for button1 here
+                break;
+            //case R.id.button2:
+                // your code for button2 here
+             //   break;
+            // even more buttons here
+        }
+    }
+
+    private void signInButtonPressed()
+    {
+        final String username = ((EditText) findViewById(R.id.username)).getText().toString();
+        String password = ((EditText) findViewById(R.id.password)).getText().toString();
+        ParseUser.logInInBackground(username, password, new LogInCallback() {
+            public void done(ParseUser user, ParseException e) {
+                if (user != null) {
+                    // Hooray! The user is logged in.
+                    //System.out.println("User is logged in.");
+                    android.util.Log.v("Logged In", username + " is logged in.");
+                } else {
+                    // Signup failed. Look at the ParseException to see what happened.
+                    android.util.Log.v("Not Logged In", "Sign in failed.");
+                }
+            }
+        });
     }
 }
